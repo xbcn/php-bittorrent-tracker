@@ -446,6 +446,6 @@ class MongoDB implements BackendInterface {
      * @return string
      */
     private function encode($value) {
-        return hex2bin(urlencode($value));
+        return function_exists('hex2bin') ? hex2bin(urlencode($value)) : pack('H*', $value);
     }
 }
