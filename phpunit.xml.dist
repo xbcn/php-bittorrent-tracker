@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit colors="true" bootstrap="tests/bootstrap.php">
   <testsuites>
-    <testsuite name="PHP BitTorrent Tracker unit tests">
+    <testsuite name="php-bittorrent-tracker-unittest">
       <directory>tests/PHP/BitTorrent/Tracker/UnitTest</directory>
     </testsuite>
-    <testsuite name="PHP BitTorrent Tracker integration tests">
+    <testsuite name="php-bittorrent-tracker-integrationtest">
       <directory>tests/PHP/BitTorrent/Tracker/IntegrationTest</directory>
     </testsuite>
   </testsuites>
