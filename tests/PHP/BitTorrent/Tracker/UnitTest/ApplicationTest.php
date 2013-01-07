@@ -55,9 +55,10 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
      * @covers PHP\BitTorrent\Tracker\Application::run
      */
     public function testThrowsExceptionWhenEventListenerIsNotCorrectlyConfigured() {
+        $backend = $this->getMock('PHP\BitTorrent\Tracker\Backend\BackendInterface');
         $application = new Application(array(
             'tracker' => array(),
-            'backend' => function() { return $this->getMock('PHP\BitTorrent\Tracker\Backend\BackendInterface'); },
+            'backend' => function() use ($backend) { return $backend; },
             'eventListeners' => array(
                 'test' => array(
                     'callback' => function($event) {},
