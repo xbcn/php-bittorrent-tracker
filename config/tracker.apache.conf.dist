@@ -1,0 +1,16 @@
+<VirtualHost *:80>
+    # Servername of the virtual host
+    ServerName your.tracker.host
+
+    # Document root where the index.php file is located
+    DocumentRoot /path/to/php-bittorrent-tracker/public
+
+    # Logging
+    # CustomLog /path/to/logs/tracker.access_log combined
+    # ErrorLog /path/to/logs/tracker.error_log
+
+    # Uncomment the following lines to support /announce and /scrape
+    # RewriteEngine on
+    # RewriteRule ^/announce$ /tracker.php [L]
+    # RewriteRule ^/scrape$ /scrape.php [L]
+</VirtualHost>

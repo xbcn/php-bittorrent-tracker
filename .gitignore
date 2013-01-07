@@ -1,0 +1,6 @@
+build
+vendor
+phpunit.xml
+composer.phar
+config/config.php
+config/tracker.apache.conf

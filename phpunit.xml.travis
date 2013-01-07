@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true" bootstrap="tests/bootstrap.php">
+  <testsuites>
+    <testsuite name="PHP BitTorrent unit tests">
+      <directory>tests/PHP/BitTorrent/UnitTest</directory>
+    </testsuite>
+    <testsuite name="PHP BitTorrent integration tests">
+      <directory>tests/PHP/BitTorrent/IntegrationTest</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <includePath>./tests</includePath>
+  </php>
+</phpunit>
