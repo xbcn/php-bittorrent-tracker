@@ -128,4 +128,11 @@ interface BackendInterface {
      * @return int|boolean
      */
     function getNumTorrentDownloads($infoHash);
+
+    /**
+     * Get the total amount of torrents
+     *
+     * @return int
+     */
+    function getNumTorrents();
 }

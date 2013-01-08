@@ -374,6 +374,17 @@ class MongoDB implements BackendInterface {
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getNumTorrents() {
+        try {
+            return $this->getTorrentCollection()->count();
+        } catch (MongoException $e) {
+            return false;
+        }
+    }
+
+    /**
      * Get the torrent mongo collection
      *
      * @return MongoCollection

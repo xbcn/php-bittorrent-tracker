@@ -321,6 +321,19 @@ class Doctrine implements BackendInterface {
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getNumTorrents() {
+        $query = $this->getConnection()->createQueryBuilder();
+        $query->select('COUNT(t.id)')
+              ->from($this->tableNames['torrent'], 't');
+
+        $stmt = $query->execute();
+
+        return (int) $stmt->fetchColumn();
+    }
+
+    /**
      * Set the connection instance
      *
      * @param Connection $connection The connection instance

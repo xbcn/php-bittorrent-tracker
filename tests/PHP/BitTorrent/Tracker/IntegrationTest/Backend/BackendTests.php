@@ -89,14 +89,18 @@ abstract class BackendTests extends \PHPUnit_Framework_TestCase {
 
     public function testInsertTorrent() {
         $hash = $this->getInfoHash();
+        $this->assertSame(0, $this->backend->getNumTorrents());
         $this->assertTrue($this->backend->registerTorrent($hash));
         $this->assertTrue($this->backend->torrentExists($hash));
+        $this->assertSame(1, $this->backend->getNumTorrents());
     }
 
     public function testInsertTorrentThatAlreadyExists() {
         $hash = $this->getInfoHash();
+        $this->assertSame(0, $this->backend->getNumTorrents());
         $this->assertTrue($this->backend->registerTorrent($hash));
         $this->assertFalse($this->backend->registerTorrent($hash));
+        $this->assertSame(1, $this->backend->getNumTorrents());
     }
 
     public function testTorrentPeerExistsWithANonExistingPeer() {
@@ -155,11 +159,15 @@ abstract class BackendTests extends \PHPUnit_Framework_TestCase {
     public function testGetAllTorrents() {
         $hashes = array();
 
+        $this->assertSame(0, $this->backend->getNumTorrents());
+
         for ($i = 0; $i < 10; $i++) {
             $hash = $this->getInfoHash();
             $hashes[] = $hash;
             $this->assertTrue($this->backend->registerTorrent($hash));
         }
+
+        $this->assertSame(10, $this->backend->getNumTorrents());
 
         $result = $this->backend->getAllTorrents();
 
