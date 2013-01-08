@@ -111,13 +111,13 @@ interface BackendInterface {
     function getTorrentPeers($infoHash, $limit = null, PeerInterface $exclude = null);
 
     /**
-     * Get all torrent info hashes stored in the backend
+     * Get a list of info hashes
      *
-     * If an error occurs this method must return an empty array
-     *
+     * @param int $page The page
+     * @param int $limit Limit the amount of hashes returned
      * @return string[] Returns an array of info hashes
      */
-    function getAllTorrents();
+    function getTorrents($page = 1, $limit = 20);
 
     /**
      * Get the number of times a torrent has been downloaded

@@ -121,12 +121,15 @@ class MongoDB implements BackendInterface {
     /**
      * {@inheritdoc}
      */
-    public function getAllTorrents() {
+    public function getTorrents($page = 1, $limit = 20) {
         try {
             $infoHashes = array();
             $cursor = $this->getTorrentCollection()->find(array(), array(
                 'infoHash' => true,
-            ));
+            ))->limit($limit)->sort(array('info_hash' => 1));
+
+            $skip = $limit * ($page - 1);
+            $cursor->skip($skip);
 
             foreach ($cursor as $item) {
                 $infoHashes[] = $this->encode($item['infoHash']);

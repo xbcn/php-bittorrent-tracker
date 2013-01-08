@@ -86,12 +86,15 @@ class Doctrine implements BackendInterface {
     /**
      * {@inheritdoc}
      */
-    public function getAllTorrents() {
+    public function getTorrents($page = 1, $limit = 20) {
         $hashes = array();
 
         $query = $this->getConnection()->createQueryBuilder();
         $query->select('t.infoHash')
-              ->from($this->tableNames['torrent'], 't');
+              ->from($this->tableNames['torrent'], 't')
+              ->setMaxResults($limit)
+              ->setFirstResult($limit * ($page - 1))
+              ->orderBy('t.infoHash');
 
         $stmt = $query->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);

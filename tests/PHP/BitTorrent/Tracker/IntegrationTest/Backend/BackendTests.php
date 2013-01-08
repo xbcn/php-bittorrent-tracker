@@ -50,7 +50,7 @@ abstract class BackendTests extends \PHPUnit_Framework_TestCase {
      * @return string
      */
     private function getInfoHash() {
-        return uniqid('infoHash_', true);
+        return substr('infoHash_' . sha1(uniqid('', true)), 0, 20);
     }
 
     /**
@@ -59,7 +59,7 @@ abstract class BackendTests extends \PHPUnit_Framework_TestCase {
      * @return string
      */
     private function getPeerId() {
-        return substr(uniqid('peerId_', true), 0, 20);
+        return substr('peerId_' . sha1(uniqid('', true)), 0, 20);
     }
 
     /**
@@ -152,11 +152,11 @@ abstract class BackendTests extends \PHPUnit_Framework_TestCase {
         $this->assertFalse($this->backend->deleteTorrent($infoHash));
     }
 
-    public function testGetAllTorrentsWithNoneRegistered() {
-        $this->assertSame(array(), $this->backend->getAllTorrents());
+    public function testGetTorrentsWithNoneRegistered() {
+        $this->assertSame(array(), $this->backend->getTorrents());
     }
 
-    public function testGetAllTorrents() {
+    public function testGetTorrents() {
         $hashes = array();
 
         $this->assertSame(0, $this->backend->getNumTorrents());
@@ -169,7 +169,7 @@ abstract class BackendTests extends \PHPUnit_Framework_TestCase {
 
         $this->assertSame(10, $this->backend->getNumTorrents());
 
-        $result = $this->backend->getAllTorrents();
+        $result = $this->backend->getTorrents(1, 100);
 
         $this->assertCount(10, $result);
 
@@ -178,6 +178,24 @@ abstract class BackendTests extends \PHPUnit_Framework_TestCase {
                 $this->fail('Missing hash from the result');
             }
         }
+
+        $parts = array();
+        $parts[] = $this->backend->getTorrents(1, 2);
+        $parts[] = $this->backend->getTorrents(2, 2);
+        $parts[] = $this->backend->getTorrents(3, 2);
+        $parts[] = $this->backend->getTorrents(4, 2);
+        $parts[] = $this->backend->getTorrents(5, 2);
+
+        $this->assertSame($parts[0][0], $result[0]);
+        $this->assertSame($parts[0][1], $result[1]);
+        $this->assertSame($parts[1][0], $result[2]);
+        $this->assertSame($parts[1][1], $result[3]);
+        $this->assertSame($parts[2][0], $result[4]);
+        $this->assertSame($parts[2][1], $result[5]);
+        $this->assertSame($parts[3][0], $result[6]);
+        $this->assertSame($parts[3][1], $result[7]);
+        $this->assertSame($parts[4][0], $result[8]);
+        $this->assertSame($parts[4][1], $result[9]);
     }
 
     public function testDeleteTorrentPeerWhenTorrentDoesNotExist() {
