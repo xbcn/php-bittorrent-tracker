@@ -84,14 +84,14 @@ class TrackerTest extends ListenerTests {
         $seed = $this->getMock('PHP\BitTorrent\Tracker\Peer\PeerInterface');
         $seed->expects($this->any())->method('isSeed')->will($this->returnValue(true));
 
-        $this->backend->expects($this->once())->method('getAllTorrents')->will($this->returnValue($infoHashes));
-        $this->backend->expects($this->at(1))->method('torrentExists')->with($infoHashes[0])->will($this->returnValue(true));
+        $this->backend->expects($this->once())->method('getNumTorrents')->will($this->returnValue(3));
+        $this->backend->expects($this->once())->method('getTorrents')->with(1, 3)->will($this->returnValue($infoHashes));
         $this->backend->expects($this->at(2))->method('getTorrentPeers')->with($infoHashes[0])->will($this->returnValue(array($peer1, $peer2)));
         $this->backend->expects($this->at(3))->method('getNumTorrentDownloads')->with($infoHashes[0])->will($this->returnValue(10));
-        $this->backend->expects($this->at(4))->method('torrentExists')->with($infoHashes[1])->will($this->returnValue(false));
-        $this->backend->expects($this->at(5))->method('torrentExists')->with($infoHashes[2])->will($this->returnValue(true));
+        $this->backend->expects($this->at(4))->method('getTorrentPeers')->with($infoHashes[1])->will($this->returnValue(array($peer1)));
+        $this->backend->expects($this->at(5))->method('getNumTorrentDownloads')->with($infoHashes[1])->will($this->returnValue(15));
         $this->backend->expects($this->at(6))->method('getTorrentPeers')->with($infoHashes[2])->will($this->returnValue(array($seed, $peer1)));
-        $this->backend->expects($this->at(7))->method('getNumTorrentDownloads')->with($infoHashes[2])->will($this->returnValue(15));
+        $this->backend->expects($this->at(7))->method('getNumTorrentDownloads')->with($infoHashes[2])->will($this->returnValue(20));
 
         $this->encoder->expects($this->once())->method('encodeDictionary')->with(array(
             'files' => array(
@@ -100,8 +100,13 @@ class TrackerTest extends ListenerTests {
                     'complete' => 0,
                     'incomplete' => 2,
                 ),
-                $infoHashes[2] => array(
+                $infoHashes[1] => array(
                     'downloaded' => 15,
+                    'complete' => 0,
+                    'incomplete' => 1,
+                ),
+                $infoHashes[2] => array(
+                    'downloaded' => 20,
                     'complete' => 1,
                     'incomplete' => 1,
                 ),

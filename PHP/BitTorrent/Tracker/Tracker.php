@@ -108,14 +108,17 @@ class Tracker implements Event\Listener {
             $infoHash = array($infoHash);
         }
 
+        $existsCheck = true;
+
         if (empty($infoHash)) {
-            $infoHash = $backend->getAllTorrents();
+            $existsCheck = false;
+            $infoHash = $backend->getTorrents(1, $backend->getNumTorrents());
         }
 
         $body = array('files' => array());
 
         foreach ($infoHash as $hash) {
-            if (!$backend->torrentExists($hash)) {
+            if ($existsCheck && !$backend->torrentExists($hash)) {
                 continue;
             }
 
