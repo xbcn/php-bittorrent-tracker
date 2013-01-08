@@ -1,10 +1,10 @@
 # PHP BitTorrent Tracker
-PHP BitTorrent Tracker is a standalone torrent tracker written in PHP. It is not a complete tracker system with user registration and such (like for instance [BtiTracker](http://sourceforge.net/projects/btit-tracker/), but a simple standalone tracker. You can extend it to do user statistics and such using event listeners.
+PHP BitTorrent Tracker is a standalone torrent tracker written in PHP. It is not a complete tracker system with user registration and such (like for instance [BtiTracker](http://sourceforge.net/projects/btit-tracker/)), but a simple standalone tracker. You can extend it to do user statistics and such using event listeners.
 
 ## Requirements
 PHP BitTorrent Tracker requires PHP 5.3.x or above. The recommended version is 5.3.2 or newer.
 
-It also requires the [pecl/mongo](http://pecl.php.net/mongo) extension (>= 1.3.0).
+It also requires the [pecl/mongo](http://pecl.php.net/mongo) extension (>= 1.3.0) or [Doctrine DBAL](http://www.doctrine-project.org/projects/dbal.html).
 
 ## Installation
 PHP BitTorrent Tracker can be installed using Composer:
