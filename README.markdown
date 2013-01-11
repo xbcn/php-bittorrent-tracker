@@ -80,3 +80,18 @@ return array(
 ```
 
 The listener uses MongoDB for storing the data, and is mostly included to showcase the event listener system. Have a look at the documentation in `config/config.default.php` to see how you can attach listeners if other ways.
+
+## Generate downloaded info file for bttrack
+If you want to stop using this tracker and migrate to bttrack (the official [BitTorrent](http://www.bittorrent.com) tracker) you can generate a compatible file using a shell script that ships with PHP BitTorrent Tracker:
+
+```
+./scripts/generateDFile.php > dfile
+```
+
+After doing this you can start bttrack using the generated file:
+
+```
+bttrack --port 1349 --dfile dfile
+```
+
+The script that generates this file uses the current tracker configuration.
