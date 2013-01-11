@@ -69,7 +69,7 @@ class DoctrineTest extends BackendTests {
                 peerId BLOB NOT NULL,
                 ip TEXT NOT NULL,
                 port INTEGER NOT NULL default '0',
-                seed BOOLEAN NOT NULL default '0',
+                left INTEGER NOT NULL default '0',
                 registered INTEGER NOT NULL,
                 updated INTEGER NOT NULL,
                 UNIQUE (torrentId,peerId)

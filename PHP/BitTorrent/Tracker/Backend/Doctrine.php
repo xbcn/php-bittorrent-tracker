@@ -122,7 +122,7 @@ class Doctrine implements BackendInterface {
               ->where('p.peerId = :peerId')
               ->andWhere('p.torrentId = :torrentId')
               ->setParameters(array(
-                  ':peerId' => $peer->getId(),
+                  ':peerId' => $peer->id(),
                   ':torrentId' => $torrentId,
               ));
 
@@ -150,7 +150,7 @@ class Doctrine implements BackendInterface {
 
         if ($exclude) {
             $query->andWhere('p.peerId != :excludePeerId')
-                  ->setParameter(':excludePeerId', $exclude->getId());
+                  ->setParameter(':excludePeerId', $exclude->id());
         }
 
         if ($limit) {
@@ -162,10 +162,10 @@ class Doctrine implements BackendInterface {
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $peer = new Peer();
-            $peer->setIp($row['ip'])
-                 ->setId($row['peerId'])
-                 ->setPort($row['port'])
-                 ->isSeed((boolean) $row['seed']);
+            $peer->ip($row['ip'])
+                 ->id($row['peerId'])
+                 ->port($row['port'])
+                 ->left($row['left']);
 
             $peers[] = $peer;
         }
@@ -188,7 +188,7 @@ class Doctrine implements BackendInterface {
                         ->where('peerId = :peerId')
                         ->andWhere('torrentId = :torrentId')
                         ->setParameters(array(
-                            ':peerId' => $peer->getId(),
+                            ':peerId' => $peer->id(),
                             ':torrentId' => $torrentId,
                         ))
                         ->execute();
@@ -235,12 +235,12 @@ class Doctrine implements BackendInterface {
 
         $this->getConnection()->insert($this->tableNames['peer'], array(
             'torrentId' => $torrentId,
-            'peerId' => $peer->getId(),
-            'ip' => $peer->getIp(),
-            'port' => $peer->getPort(),
+            'peerId' => $peer->id(),
+            'ip' => $peer->ip(),
+            'port' => $peer->port(),
             'registered' => $time,
             'updated' => $time,
-            'seed' => ($peer->isSeed() ? 1 : 0),
+            'left' => $peer->left(),
         ));
 
         return true;
@@ -257,12 +257,12 @@ class Doctrine implements BackendInterface {
         }
 
         return (boolean) $this->getConnection()->update($this->tableNames['peer'], array(
-            'ip' => $peer->getIp(),
-            'port' => $peer->getPort(),
+            'ip' => $peer->ip(),
+            'port' => $peer->port(),
             'updated' => time(),
-            'seed' => ($peer->isSeed() ? 1 : 0),
+            'left' => $peer->left(),
         ), array(
-            'peerId' => $peer->getId(),
+            'peerId' => $peer->id(),
             'torrentId' => $torrentId,
         ));
     }
@@ -271,6 +271,8 @@ class Doctrine implements BackendInterface {
      * {@inheritdoc}
      */
     public function torrentPeerComplete($infoHash, PeerInterface $peer) {
+        $peer->left(0);
+
         if (!$this->updateTorrentPeer($infoHash, $peer)) {
             return false;
         }

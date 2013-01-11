@@ -147,7 +147,7 @@ class MongoDB implements BackendInterface {
     public function torrentPeerExists($infoHash, PeerInterface $peer) {
         $data = $this->getPeerCollection()->findOne(array(
             'infoHash' => $this->decode($infoHash),
-            'id' => $this->decode($peer->getId()),
+            'id' => $this->decode($peer->id()),
         ));
 
         if ($data) {
@@ -165,7 +165,7 @@ class MongoDB implements BackendInterface {
             $query = array('infoHash' => $this->decode($infoHash));
 
             if ($exclude) {
-                $query['id'] = array('$ne' => $this->decode($exclude->getId()));
+                $query['id'] = array('$ne' => $this->decode($exclude->id()));
             }
 
             $cursor = $this->getPeerCollection()->find($query);
@@ -178,10 +178,10 @@ class MongoDB implements BackendInterface {
 
             foreach ($cursor as $p) {
                 $peer = new Peer();
-                $peer->setIp($p['ip'])
-                     ->setId($this->encode($p['id']))
-                     ->setPort($p['port'])
-                     ->isSeed((boolean) $p['seed']);
+                $peer->ip($p['ip'])
+                     ->id($this->encode($p['id']))
+                     ->port($p['port'])
+                     ->left($p['left']);
 
                 $peers[] = $peer;
             }
@@ -199,7 +199,7 @@ class MongoDB implements BackendInterface {
         try {
             $query = array(
                 'infoHash' => $this->decode($infoHash),
-                'id' => $this->decode($peer->getId()),
+                'id' => $this->decode($peer->id()),
             );
 
             $data = $this->getPeerCollection()->findOne($query);
@@ -261,10 +261,10 @@ class MongoDB implements BackendInterface {
 
         $data = array(
             'infoHash' => $this->decode($infoHash),
-            'id' => $this->decode($peer->getId()),
-            'ip' => $peer->getIp(),
-            'port' => $peer->getPort(),
-            'seed' => ($peer->isSeed() ? 1 : 0),
+            'id' => $this->decode($peer->id()),
+            'ip' => $peer->ip(),
+            'port' => $peer->port(),
+            'left' => $peer->left(),
             'time' => $time,
             'updated' => $time,
         );
@@ -292,9 +292,9 @@ class MongoDB implements BackendInterface {
 
         // Update information about the peer
         $updatedData = array(
-            'ip' => $peer->getIp(),
-            'port' => $peer->getPort(),
-            'seed' => ($peer->isSeed() ? 1 : 0),
+            'ip' => $peer->ip(),
+            'port' => $peer->port(),
+            'left' => $peer->left(),
             'updated' => time(),
         );
 
@@ -302,7 +302,7 @@ class MongoDB implements BackendInterface {
             $this->getPeerCollection()->update(
                 array(
                     'infoHash' => $this->decode($infoHash),
-                    'id' => $this->decode($peer->getId())
+                    'id' => $this->decode($peer->id())
                 ),
                 array('$set' => $updatedData),
                 array('multiple' => false)
@@ -318,6 +318,8 @@ class MongoDB implements BackendInterface {
      * {@inheritdoc}
      */
     public function torrentPeerComplete($infoHash, PeerInterface $peer) {
+        $peer->left(0);
+
         if (!$this->updateTorrentPeer($infoHash, $peer)) {
             return false;
         }

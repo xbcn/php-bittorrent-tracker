@@ -66,19 +66,19 @@ abstract class BackendTests extends \PHPUnit_Framework_TestCase {
      * Get a peer mock
      *
      * @param boolean $setId Whether or not to set the peer id
-     * @param boolean $seed Whether or not the peer is a seed
+     * @param boolean $left How much the peer has left to download
      * @return PeerInterface
      */
-    private function getPeer($setId = true, $seed = false) {
+    private function getPeer($setId = true, $left = 123) {
         $peer = $this->getMock('PHP\BitTorrent\Tracker\Peer\PeerInterface');
 
         if ($setId) {
-            $peer->expects($this->any())->method('getId')->will($this->returnValue($this->getPeerId()));
+            $peer->expects($this->any())->method('id')->will($this->returnValue($this->getPeerId()));
         }
 
-        $peer->expects($this->any())->method('getIp')->will($this->returnValue('127.0.0.1'));
-        $peer->expects($this->any())->method('getPort')->will($this->returnValue(123));
-        $peer->expects($this->any())->method('isSeed')->will($this->returnValue($seed));
+        $peer->expects($this->any())->method('ip')->will($this->returnValue('127.0.0.1'));
+        $peer->expects($this->any())->method('port')->will($this->returnValue(123));
+        $peer->expects($this->any())->method('left')->will($this->returnValue($left));
 
         return $peer;
     }
@@ -109,7 +109,7 @@ abstract class BackendTests extends \PHPUnit_Framework_TestCase {
 
         $peerId = $this->getPeerId();
         $peer = $this->getPeer(false);
-        $peer->expects($this->once())->method('getId')->will($this->returnValue($peerId));
+        $peer->expects($this->once())->method('id')->will($this->returnValue($peerId));
 
         $this->assertFalse($this->backend->torrentPeerExists($hash, $peer));
     }
@@ -232,11 +232,11 @@ abstract class BackendTests extends \PHPUnit_Framework_TestCase {
         $this->assertTrue($this->backend->registerTorrent($hash));
 
         $peers = array(
-            array('peer' => $this->getPeer(true, true), 'seed' => true),
-            array('peer' => $this->getPeer(true, true), 'seed' => true),
-            array('peer' => $this->getPeer(true, false), 'seed' => false),
-            array('peer' => $this->getPeer(true, false), 'seed' => false),
-            array('peer' => $this->getPeer(true, true), 'seed' => true),
+            array('peer' => $this->getPeer(true, 0), 'seed' => true),
+            array('peer' => $this->getPeer(true, 0), 'seed' => true),
+            array('peer' => $this->getPeer(true, 123), 'seed' => false),
+            array('peer' => $this->getPeer(true, 123), 'seed' => false),
+            array('peer' => $this->getPeer(true, 0), 'seed' => true),
         );
 
         foreach ($peers as $peer) {
@@ -250,11 +250,11 @@ abstract class BackendTests extends \PHPUnit_Framework_TestCase {
         $seeders = 0;
 
         foreach ($result as $peer) {
-            if ($peer->getId() == $peers[0]['peer']->getId()) {
+            if ($peer->id() == $peers[0]['peer']->id()) {
                 $this->fail('Peer not excluded from the result');
             }
 
-            if ($peer->isSeed()) {
+            if ($peer->left()) {
                 $seeders++;
             }
         }
@@ -279,17 +279,26 @@ abstract class BackendTests extends \PHPUnit_Framework_TestCase {
         $peerId = $this->getPeerId();
 
         $peer = new Peer();
-        $peer->setId($peerId);
-        $peer->setIp('127.0.0.1');
-        $peer->setPort(123);
+        $peer->id($peerId);
+        $peer->ip('127.0.0.1');
+        $peer->port(123);
+        $peer->left(123);
 
         $this->assertTrue($this->backend->registerTorrent($hash));
         $this->assertTrue($this->backend->registerTorrentPeer($hash, $peer));
 
+        $peer->left(12);
+
+        $this->assertTrue($this->backend->updateTorrentPeer($hash, $peer));
+        $peers = $this->backend->getTorrentPeers($hash);
+        $this->assertSame($peer->id(), $peers[0]->id());
+        $this->assertSame(12, $peers[0]->left());
+
         $this->assertTrue($this->backend->torrentPeerComplete($hash, $peer));
         $peers = $this->backend->getTorrentPeers($hash);
 
-        $this->assertSame($peers[0]->getId(), $peer->getId());
+        $this->assertSame($peer->id(), $peers[0]->id());
+        $this->assertSame(0, $peers[0]->left());
     }
 
     public function testGetNumTorrentDownloads() {
@@ -300,14 +309,16 @@ abstract class BackendTests extends \PHPUnit_Framework_TestCase {
 
         // Create peers
         $peer1 = new Peer();
-        $peer1->setId($this->getPeerId());
-        $peer1->setIp('127.0.0.1');
-        $peer1->setPort(123);
+        $peer1->id($this->getPeerId());
+        $peer1->ip('127.0.0.1');
+        $peer1->port(123);
+        $peer1->left(123);
 
         $peer2 = new Peer();
-        $peer2->setId($this->getPeerId());
-        $peer2->setIp('127.0.0.1');
-        $peer2->setPort(1234);
+        $peer2->id($this->getPeerId());
+        $peer2->ip('127.0.0.1');
+        $peer2->port(1234);
+        $peer2->left(234);
 
         $this->assertTrue($this->backend->registerTorrentPeer($hash, $peer1));
         $this->assertTrue($this->backend->registerTorrentPeer($hash, $peer2));

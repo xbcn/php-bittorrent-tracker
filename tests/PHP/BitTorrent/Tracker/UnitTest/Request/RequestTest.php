@@ -50,9 +50,9 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
         $this->assertFalse($request->getCompact());
         $peer = $request->getPeer();
         $this->assertInstanceOf('PHP\BitTorrent\Tracker\Peer\PeerInterface', $peer);
-        $this->assertSame($this->query['peer_id'], $peer->getId());
-        $this->assertSame($this->query['port'], $peer->getPort());
-        $this->assertSame($this->query['ip'], $peer->getIp());
+        $this->assertSame($this->query['peer_id'], $peer->id());
+        $this->assertSame($this->query['port'], $peer->port());
+        $this->assertSame($this->query['ip'], $peer->ip());
     }
 
     /**
@@ -109,7 +109,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
 
         $request = new Request($query);
         $peer = $request->getPeer();
-        $this->assertTrue($peer->isSeed());
+        $this->assertSame(0, $peer->left());
     }
 
     /**
@@ -132,6 +132,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase {
         $request = new Request($query, array(), array(), array(), array(), array('REMOTE_ADDR' => '1.2.3.4'));
 
         $peer = $request->getPeer();
-        $this->assertSame('1.2.3.4', $peer->getIp());
+        $this->assertSame('1.2.3.4', $peer->ip());
     }
 }

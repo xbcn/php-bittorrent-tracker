@@ -78,11 +78,11 @@ class TrackerTest extends ListenerTests {
             str_repeat('c', 20),
         );
         $peer1 = $this->getMock('PHP\BitTorrent\Tracker\Peer\PeerInterface');
-        $peer1->expects($this->any())->method('isSeed')->will($this->returnValue(false));
+        $peer1->expects($this->any())->method('left')->will($this->returnValue(123));
         $peer2 = $this->getMock('PHP\BitTorrent\Tracker\Peer\PeerInterface');
-        $peer2->expects($this->any())->method('isSeed')->will($this->returnValue(false));
+        $peer2->expects($this->any())->method('left')->will($this->returnValue(456));
         $seed = $this->getMock('PHP\BitTorrent\Tracker\Peer\PeerInterface');
-        $seed->expects($this->any())->method('isSeed')->will($this->returnValue(true));
+        $seed->expects($this->any())->method('left')->will($this->returnValue(0));
 
         $this->backend->expects($this->once())->method('getNumTorrents')->will($this->returnValue(3));
         $this->backend->expects($this->once())->method('getTorrents')->with(1, 3)->will($this->returnValue($infoHashes));
@@ -309,15 +309,15 @@ class TrackerTest extends ListenerTests {
      * @param string $id The peer id
      * @param string $ip The peer ip
      * @param int $port The peer port
-     * @param boolean $seed Whether or not the peer is a seed
+     * @param int $left How much the peer has left to download
      * @return PeerInterface
      */
-    private function getPeer($id, $ip, $port, $seed = false) {
+    private function getPeer($id, $ip, $port, $left = 123) {
         $peer = $this->getMock('PHP\BitTorrent\Tracker\Peer\PeerInterface');
-        $peer->expects($this->any())->method('getId')->will($this->returnValue($id));
-        $peer->expects($this->any())->method('getIp')->will($this->returnValue($ip));
-        $peer->expects($this->any())->method('getPort')->will($this->returnValue($port));
-        $peer->expects($this->any())->method('isSeed')->will($this->returnValue($seed));
+        $peer->expects($this->any())->method('id')->will($this->returnValue($id));
+        $peer->expects($this->any())->method('ip')->will($this->returnValue($ip));
+        $peer->expects($this->any())->method('port')->will($this->returnValue($port));
+        $peer->expects($this->any())->method('left')->will($this->returnValue($left));
 
         return $peer;
     }
@@ -331,6 +331,6 @@ class TrackerTest extends ListenerTests {
      * @return PeerInterface
      */
     private function getSeed($id, $ip, $port) {
-        return $this->getPeer($id, $ip, $port, true);
+        return $this->getPeer($id, $ip, $port, 0);
     }
 }

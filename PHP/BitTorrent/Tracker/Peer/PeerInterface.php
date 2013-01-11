@@ -18,55 +18,34 @@ namespace PHP\BitTorrent\Tracker\Peer;
  */
 interface PeerInterface {
     /**
-     * Set the peer id
+     * Set or get the id
      *
-     * @param string $id The id to set
-     * @return PeerInterface
+     * @param string|null $id The id to set
+     * @return string|PeerInterface
      */
-    function setId($id);
+    function id($id = null);
 
     /**
-     * Get the peer id
+     * Set or get the peer ip address
      *
-     * @return string
+     * @param string|null $ip The ip address to set
+     * @return string|PeerInterface
      */
-    function getId();
+    function ip($ip = null);
 
     /**
-     * Set the peer ip address
+     * Set or get the port the client uses
      *
-     * @param string $ip The ip address to set
-     * @return PeerInterface
+     * @param int|null $port The port
+     * @return int|PeerInterface
      */
-    function setIp($ip);
+    function port($port = null);
 
     /**
-     * Get the ip address
+     * Set or get the amount of bytes the peer has left to download
      *
-     * @return string
+     * @param int|null $left Number of bytes
+     * @return int|PeerInterface
      */
-    function getIp();
-
-    /**
-     * Set the port the client uses
-     *
-     * @param int $port The port
-     * @return PeerInterface
-     */
-    function setPort($port);
-
-    /**
-     * Get the port the client uses
-     *
-     * @return int
-     */
-    function getPort();
-
-    /**
-     * Set or get the seed flag
-     *
-     * @param boolean $flag
-     * @return PeerInterface|boolean
-     */
-    function isSeed($flag = null);
+    function left($left = null);
 }

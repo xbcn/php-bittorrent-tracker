@@ -39,16 +39,20 @@ class Peer implements PeerInterface {
     private $port;
 
     /**
-     * Whether or not the peer is a seed
+     * The amount of bytes the peer has left to download
      *
-     * @var boolean
+     * @var int
      */
-    private $seed = false;
+    private $left;
 
     /**
      * {@inheritdoc}
      */
-    public function setIp($ip) {
+    public function ip($ip = null) {
+        if ($ip === null) {
+            return $this->ip;
+        }
+
         $this->ip = $ip;
 
         return $this;
@@ -57,14 +61,11 @@ class Peer implements PeerInterface {
     /**
      * {@inheritdoc}
      */
-    public function getIp() {
-        return $this->ip;
-    }
+    public function id($id = null) {
+        if ($id === null) {
+            return $this->id;
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id) {
         $this->id = $id;
 
         return $this;
@@ -73,14 +74,11 @@ class Peer implements PeerInterface {
     /**
      * {@inheritdoc}
      */
-    public function getId() {
-        return $this->id;
-    }
+    public function port($port = null) {
+        if ($port === null) {
+            return $this->port;
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setPort($port) {
         $this->port = (int) $port;
 
         return $this;
@@ -89,20 +87,13 @@ class Peer implements PeerInterface {
     /**
      * {@inheritdoc}
      */
-    public function getPort() {
-        return $this->port;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isSeed($flag = null) {
-        if ($flag !== null) {
-            $this->seed = (boolean) $flag;
-
-            return $this;
+    public function left($left = null) {
+        if ($left === null) {
+            return $this->left;
         }
 
-        return $this->seed;
+        $this->left = (int) $left;
+
+        return $this;
     }
 }

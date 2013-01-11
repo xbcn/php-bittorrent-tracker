@@ -48,18 +48,11 @@ class Request extends SymfonyRequest implements RequestInterface {
      */
     public function getPeer() {
         if ($this->peer === null) {
-            $seed = false;
-            $left = $this->query->get('left');
-
-            if ($left !== null && (int) $left === 0) {
-                $seed = true;
-            }
-
             $this->peer = new Peer();
-            $this->peer->setId($this->query->get('peer_id'))
-                       ->setIp($this->getPeerIp())
-                       ->setPort($this->query->get('port'))
-                       ->isSeed($seed);
+            $this->peer->id($this->query->get('peer_id'))
+                       ->ip($this->getPeerIp())
+                       ->port($this->query->get('port'))
+                       ->left($this->query->get('left'));
         }
 
         return $this->peer;

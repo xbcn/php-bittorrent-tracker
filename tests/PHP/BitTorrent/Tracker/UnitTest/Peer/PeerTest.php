@@ -36,46 +36,42 @@ class PeerTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers PHP\BitTorrent\Tracker\Peer\Peer::setIp
-     * @covers PHP\BitTorrent\Tracker\Peer\Peer::getIp
+     * @covers PHP\BitTorrent\Tracker\Peer\Peer::ip
      */
-    public function testSetGetIp() {
-        $this->assertNull($this->peer->getIp());
+    public function testCanSetAndGetIp() {
+        $this->assertNull($this->peer->ip());
         $ip = '127.0.0.1';
-        $this->assertSame($this->peer, $this->peer->setIp($ip));
-        $this->assertSame($ip, $this->peer->getIp());
+        $this->assertSame($this->peer, $this->peer->ip($ip));
+        $this->assertSame($ip, $this->peer->ip());
     }
 
     /**
-     * @covers PHP\BitTorrent\Tracker\Peer\Peer::setId
-     * @covers PHP\BitTorrent\Tracker\Peer\Peer::getId
+     * @covers PHP\BitTorrent\Tracker\Peer\Peer::id
      */
-    public function testSetGetId() {
-        $this->assertNull($this->peer->getId());
+    public function testCanSetAndGetId() {
+        $this->assertNull($this->peer->id());
         $id = str_repeat('a', 20);
-        $this->assertSame($this->peer, $this->peer->setId($id));
-        $this->assertSame($id, $this->peer->getId());
+        $this->assertSame($this->peer, $this->peer->id($id));
+        $this->assertSame($id, $this->peer->id());
     }
 
     /**
-     * @covers PHP\BitTorrent\Tracker\Peer\Peer::setPort
-     * @covers PHP\BitTorrent\Tracker\Peer\Peer::getPort
+     * @covers PHP\BitTorrent\Tracker\Peer\Peer::port
      */
-    public function testSetGetPort() {
-        $this->assertNull($this->peer->getPort());
+    public function testCanSetAndGetPort() {
+        $this->assertNull($this->peer->port());
         $port = 6666;
-        $this->assertSame($this->peer, $this->peer->setPort($port));
-        $this->assertSame($port, $this->peer->getPort());
+        $this->assertSame($this->peer, $this->peer->port($port));
+        $this->assertSame($port, $this->peer->port());
     }
 
     /**
-     * @covers PHP\BitTorrent\Tracker\Peer\Peer::isSeed
+     * @covers PHP\BitTorrent\Tracker\Peer\Peer::left
      */
-    public function testIsSeed() {
-        $this->assertFalse($this->peer->isSeed());
-        $this->assertSame($this->peer, $this->peer->isSeed(true));
-        $this->assertTrue($this->peer->isSeed());
-        $this->assertSame($this->peer, $this->peer->isSeed(false));
-        $this->assertFalse($this->peer->isSeed());
+    public function testCanSetAndGetLeft() {
+        $this->assertNull($this->peer->left());
+        $left = 123;
+        $this->assertSame($this->peer, $this->peer->left($left));
+        $this->assertSame($left, $this->peer->left());
     }
 }

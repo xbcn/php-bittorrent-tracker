@@ -129,7 +129,7 @@ class Tracker implements Event\Listener {
             $downloaded = (int) $backend->getNumTorrentDownloads($hash);
 
             foreach ($peers as $peer) {
-                if ($peer->isSeed()) {
+                if ($peer->left() === 0) {
                     $complete++;
                 } else {
                     $incomplete++;
@@ -224,9 +224,9 @@ class Tracker implements Event\Listener {
             $peers = '';
 
             foreach ($allPeers as $peer) {
-                $peers .= pack('Nn', ip2long($peer->getIp()), $peer->getPort());
+                $peers .= pack('Nn', ip2long($peer->ip()), $peer->port());
 
-                if ($peer->isSeed()) {
+                if ($peer->left() === 0) {
                     $complete++;
                 } else {
                     $incomplete++;
@@ -238,18 +238,18 @@ class Tracker implements Event\Listener {
 
             foreach ($allPeers as $peer) {
                 $p = array(
-                    'ip'   => $peer->getIp(),
-                    'port' => $peer->getPort(),
+                    'ip'   => $peer->ip(),
+                    'port' => $peer->port(),
                 );
 
                 // Include peer id unless specified otherwise
                 if (!$request->getNoPeerId()) {
-                    $p['peer id'] = $peer->getId();
+                    $p['peer id'] = $peer->id();
                 }
 
                 $peers[] = $p;
 
-                if ($peer->isSeed()) {
+                if ($peer->left() === 0) {
                     $complete++;
                 } else {
                     $incomplete++;

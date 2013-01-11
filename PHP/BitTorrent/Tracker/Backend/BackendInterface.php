@@ -51,6 +51,8 @@ interface BackendInterface {
     /**
      * Check if a peer for a given torrent exists
      *
+     * If the torrent does not exist, return false.
+     *
      * @param string $infoHash The info hash of the torrent
      * @param PeerInterface $peer A peer instance
      * @return boolean Returns true if the peer exists, false otherwise
