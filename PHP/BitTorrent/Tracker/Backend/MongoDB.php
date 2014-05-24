@@ -72,7 +72,7 @@ class MongoDB implements BackendInterface {
         'server' => 'mongodb://localhost:27017',
 
         // Options passed to the MongoDB instance
-        'options' => array('connect' => true, 'timeout' => 1000),
+        'options' => array('connect' => true, 'connectTimeoutMS' => 10000),
     );
 
     /**
